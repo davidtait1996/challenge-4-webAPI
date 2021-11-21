@@ -6,9 +6,12 @@ var questionEl = document.querySelector('.question');
 var answersEl = document.querySelector('.answers');
 var resultEl = document.querySelector('.result');
 var scoreEl = document.querySelector('.score');
+var finishEl = document.querySelector('.finish');
+var finishButtonEl = document.createElement("button");
+var initialsEl = document.createElement("input");
 var score = 0;
 var currentQuestion = 0;
-var timeLeft = 20;
+var timeLeft = 60;
 
 var questions = [ {
   question: "What is hutch's favorite color?",
@@ -42,7 +45,7 @@ var startGame = function() {
       timeLeft--;
     } else {
       clearInterval(timeInterval);
-      timerEl.remove();
+      endGame();
     }
   }, 1000);
 
@@ -50,6 +53,24 @@ var startGame = function() {
 
   scoreEl.textContent = "Score: " + score;
 };
+
+var displayQuestion = function(num) {
+  questionEl.classList.add("questionArea" + num);
+  var questionTitleEl = document.createElement("h2");
+  questionTitleEl.textContent = "Question " + (num+1) + " : " + questions[num].question;
+
+
+  for(var i=0; i < 4; i++){
+    var answer = document.createElement("li");
+    answer.classList.add("answer"+i);
+    answer.textContent = questions[num].answer[i];
+    answersEl.appendChild(answer);
+  }
+
+  questionEl.appendChild(questionTitleEl);
+  questionEl.appendChild(answersEl);
+
+}
 
 var deleteQuiz = function(num) {
   var questionChildCount = questionEl.childElementCount;
@@ -68,54 +89,60 @@ var deleteQuiz = function(num) {
   questionEl.classList.remove("questionArea"+num);
 }
 
-var displayQuestion = function(num) {
-  questionEl.classList.add("questionArea" + num);
-  var questionTitleEl = document.createElement("h2");
-  console.log(num);
-  questionTitleEl.textContent = "Question " + (num+1) + " : " + questions[num].question;
+var endGame = function() {
+  questionEl.remove();
+  answersEl.remove();
+  timerEl.remove();
+  resultEl.remove();
+  scoreEl.remove();
 
 
-  for(var i=0; i < 4; i++){
-    var answer = document.createElement("li");
-    answer.classList.add("answer"+i);
-    answer.textContent = questions[num].answer[i];
-    answersEl.appendChild(answer);
-  }
+  var finishTitleEl = document.createElement("h2");
+  finishTitleEl.textContent = "All done!";
+  var finishScoreEl = document.createElement("p");
+  finishScoreEl.textContent = "Your ending score was " + score + ". Enter your intials to save your high score.";
+  var finishFormEl = document.createElement("form");
+  initialsEl.setAttribute("type","text");
+  
+  finishButtonEl.setAttribute("class", "submitScore");
+  finishButtonEl.textContent = "Submit score";
 
-  questionEl.appendChild(questionTitleEl);
-  questionEl.appendChild(answersEl);
 
+  finishFormEl.appendChild(initialsEl);
+
+  finishEl.appendChild(finishTitleEl);
+  finishEl.appendChild(finishScoreEl);
+  finishEl.appendChild(finishFormEl);
+  finishEl.appendChild(finishButtonEl);
 }
-
-
 
 startButton.addEventListener("click", startGame);
 
 answersEl.addEventListener("click", function(event){  
   var element = event.target;
   if(element.getAttribute("class") === ("answer"+questions[currentQuestion].correct)){
-    console.log("you got the answer right");
     score += 1;
     scoreEl.textContent = "Score: " + score;
-    resultEl.textContent = "You got the answer right";
+    resultEl.textContent = "Correct!";
   } else {
-    console.log("you got the answer wrong");
     timeLeft -= 10;
-    resultEl.textContent = "You got the answer wrong";
+    resultEl.textContent = "Wrong!";
   }
-  console.log(score);
 
 
-  console.log("length", questions.length);
   if(currentQuestion < questions.length-1){
     deleteQuiz(currentQuestion);
     currentQuestion++;
-    console.log("current question", currentQuestion);
     displayQuestion(currentQuestion);
-  } else if ((currentQuestion === questions.length-1) || (timeLeft === 0)) {
-    localStorage.setItem("highScore", score);
-    questionEl.remove();
-    answersEl.remove();
-    timerEl.remove();
+  } else if (currentQuestion === questions.length-1) {
+    endGame();
   }
 });
+
+finishButtonEl.addEventListener("click", function(event){
+  currentHighScore = localStorage.getItem("highScore");
+  if(currentHighScore < score){
+    localStorage.setItem("initials", initialsEl.value);
+    localStorage.setItem("highScore", score);
+  }
+})
