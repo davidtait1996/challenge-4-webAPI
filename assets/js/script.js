@@ -183,12 +183,12 @@ highScoresButton.addEventListener("click", function(){
   }
 
   if(localStorage.getItem("initials") === null){
-    var currentInitials = "No high score yet.";
+    var currentInitials = "No high score yet";
   } else {
     var currentInitials = localStorage.getItem("initials");
   }
 
-  highScoreTextEl.textContent = localStorage.getItem("initials") + ": " + currentHighScore;
+  highScoreTextEl.textContent = currentInitials + ": " + currentHighScore;
 
 
 
