@@ -175,7 +175,22 @@ highScoresButton.addEventListener("click", function(){
   var highScoreTitleEl = document.createElement("h2");
   highScoreTitleEl.textContent = "High Score";
   var highScoreTextEl = document.createElement("p");
-  highScoreTextEl.textContent = localStorage.getItem("initials") + ": " + localStorage.getItem("highScore");
+
+  if(localStorage.getItem("highScore") === null){
+    var currentHighScore = 0;
+  } else {
+    var currentHighScore = localStorage.getItem("highScore");
+  }
+
+  if(localStorage.getItem("initials") === null){
+    var currentInitials = "No high score yet.";
+  } else {
+    var currentInitials = localStorage.getItem("initials");
+  }
+
+  highScoreTextEl.textContent = localStorage.getItem("initials") + ": " + currentHighScore;
+
+
 
   highScoresEl.appendChild(highScoreTitleEl);
   highScoresEl.appendChild(highScoreTextEl);
