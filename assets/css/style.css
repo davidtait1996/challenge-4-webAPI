@@ -5,3 +5,7 @@
 li {
   list-style-type: none;
 }
+
+.score {
+  text-align: center;
+}

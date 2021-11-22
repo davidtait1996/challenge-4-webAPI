@@ -67,7 +67,7 @@ var startGame = function() {
 var displayQuestion = function(num) {
   questionEl.classList.add("questionArea" + num);
   var questionTitleEl = document.createElement("h2");
-  questionTitleEl.textContent = "Question " + (num+1) + " : " + questions[num].question;
+  questionTitleEl.textContent = "Question " + (num+1) + " : " + questions[num].question + " Press on text to submit your answer.";
 
 
   for(var i=0; i < 4; i++){
@@ -172,6 +172,8 @@ finishButtonEl.addEventListener("click", function(){
 highScoresButton.addEventListener("click", function(){
   clearScreen();
   startButton.remove();
+  finishEl.remove();
+
   var highScoreTitleEl = document.createElement("h2");
   highScoreTitleEl.textContent = "High Score";
   var highScoreTextEl = document.createElement("p");
