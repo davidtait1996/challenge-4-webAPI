@@ -9,9 +9,11 @@ var scoreEl = document.querySelector('.score');
 var finishEl = document.querySelector('.finish');
 var finishButtonEl = document.createElement("button");
 var initialsEl = document.createElement("input");
+var highScoresEl = document.querySelector('.high-score-screen');
 var score = 0;
 var currentQuestion = 0;
 var timeLeft = 60;
+var gameEnded = false;
 
 var questions = [ {
   question: "What is hutch's favorite color?",
@@ -25,14 +27,19 @@ var questions = [ {
   correct: 1
 },
 {
-  question: "What is hutch's favorite color?",
-  answer: ["blue", "green", "black", "yellow"],
-  correct: 0
+  question: "Where does he like to sleep?",
+  answer: ["Couch", "Bed", "Cat tree", "Bathroom sink"],
+  correct: 1
 },
 {
-  question: "Does hutch like wet or dry food?",
-  answer: ["Wet", "Dry", "Both", "Neither"],
-  correct: 1
+  question: "What flavor of food does he like?",
+  answer: ["Tuna", "Beef", "Salmon", "Chicken"],
+  correct: 3
+},
+{
+  question: "Where did I adopt him from?",
+  answer: ["Humane Society", "Street", "Best Friends", "A friend"],
+  correct: 2
 }
 ];
 
@@ -45,7 +52,10 @@ var startGame = function() {
       timeLeft--;
     } else {
       clearInterval(timeInterval);
-      endGame();
+      if(gameEnded === false){
+        endGame();
+      }
+
     }
   }, 1000);
 
@@ -89,18 +99,29 @@ var deleteQuiz = function(num) {
   questionEl.classList.remove("questionArea"+num);
 }
 
-var endGame = function() {
+var clearScreen = function() {
   questionEl.remove();
   answersEl.remove();
   timerEl.remove();
   resultEl.remove();
   scoreEl.remove();
+}
+
+var endGame = function() {
+
+  clearScreen();
+
+  if(localStorage.getItem("highScore") === null){
+    var currentHighScore = 0;
+  } else {
+    var currentHighScore = localStorage.getItem("highScore");
+  }
 
 
   var finishTitleEl = document.createElement("h2");
   finishTitleEl.textContent = "All done!";
   var finishScoreEl = document.createElement("p");
-  finishScoreEl.textContent = "Your ending score was " + score + ". Enter your intials to save your high score.";
+  finishScoreEl.textContent = "Your ending score was " + score + ". The current high score is " + currentHighScore + ". Enter your intials to save your high score if you got a higher score.";
   var finishFormEl = document.createElement("form");
   initialsEl.setAttribute("type","text");
   
@@ -129,20 +150,33 @@ answersEl.addEventListener("click", function(event){
     resultEl.textContent = "Wrong!";
   }
 
-
   if(currentQuestion < questions.length-1){
     deleteQuiz(currentQuestion);
     currentQuestion++;
     displayQuestion(currentQuestion);
   } else if (currentQuestion === questions.length-1) {
     endGame();
+    gameEnded = true;
   }
 });
 
-finishButtonEl.addEventListener("click", function(event){
+finishButtonEl.addEventListener("click", function(){
   currentHighScore = localStorage.getItem("highScore");
   if(currentHighScore < score){
     localStorage.setItem("initials", initialsEl.value);
     localStorage.setItem("highScore", score);
   }
-})
+
+});
+
+highScoresButton.addEventListener("click", function(){
+  clearScreen();
+  startButton.remove();
+  var highScoreTitleEl = document.createElement("h2");
+  highScoreTitleEl.textContent = "High Score";
+  var highScoreTextEl = document.createElement("p");
+  highScoreTextEl.textContent = localStorage.getItem("initials") + ": " + localStorage.getItem("highScore");
+
+  highScoresEl.appendChild(highScoreTitleEl);
+  highScoresEl.appendChild(highScoreTextEl);
+});
