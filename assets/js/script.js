@@ -174,6 +174,7 @@ highScoresButton.addEventListener("click", function(){
   clearScreen();
   startButton.remove();
   finishEl.remove();
+  
   var childElementCount = highScoresEl.childElementCount;
   if(firstHighScore){
     highScoresEl.removeChild(highScoresEl.childNodes[0]);
