@@ -14,6 +14,7 @@ var score = 0;
 var currentQuestion = 0;
 var timeLeft = 60;
 var gameEnded = false;
+var firstHighScore = true;
 
 var questions = [ {
   question: "What is hutch's favorite color?",
@@ -173,6 +174,14 @@ highScoresButton.addEventListener("click", function(){
   clearScreen();
   startButton.remove();
   finishEl.remove();
+  var childElementCount = highScoresEl.childElementCount;
+  if(firstHighScore){
+    highScoresEl.removeChild(highScoresEl.childNodes[0]);
+    firstHighScore = false;
+  }
+  for(var i=0; i < childElementCount; i++){
+    highScoresEl.removeChild(highScoresEl.childNodes[0]);
+  }
 
   var highScoreTitleEl = document.createElement("h2");
   highScoreTitleEl.textContent = "High Score";
